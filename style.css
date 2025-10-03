@@ -57,3 +57,26 @@ footer {
   padding: 15px;
 }
 
+
+
+
+.post-list {
+  list-style: none;
+  padding: 0;
+}
+
+.post-list li {
+  margin-bottom: 15px;
+}
+
+.post-list a {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.post-list a:hover {
+  color: #f1c40f;
+}
+
