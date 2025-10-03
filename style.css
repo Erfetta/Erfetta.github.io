@@ -43,11 +43,13 @@ article {
 }
 
 footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   background: #2c3e50;
   color: white;
   text-align: center;
   padding: 15px;
-  position: relative;
-  bottom: 0;
-  width: 100%;
+  z-index: 1000;
 }
+
