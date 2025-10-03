@@ -66,14 +66,19 @@ footer .social-icons {
   gap: 20px;
 }
 
+footer .social-icons li {
+  display: inline;
+}
+
 footer .social-icons li a {
-  color: #f1c40f;
+  color: #f1c40f;  /* colore icona */
   font-size: 24px;
+  text-decoration: none;
   transition: transform 0.3s ease;
 }
 
 footer .social-icons li a:hover {
-  transform: scale(1.2);
+  transform: scale(1.2);  /* effetto hover semplice */
 }
 
 
