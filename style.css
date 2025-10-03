@@ -52,12 +52,12 @@ article {
 
 
 
-h1, h2 {
-            color: #2c3e50;
-        }
-        ul {
-            margin-top: 0;
-        }
+main h1, h2 {
+  color: #2c3e50;
+}
+main ul {
+  margin-top: 0;
+}
 
 footer {
   background: #2c3e50;
