@@ -98,7 +98,7 @@ GROUP BY Age;
 
       <h3>Distribuzione univariata (Height)</h3>
       <pre class="sql">
-SELECT Hight AS Height, COUNT(*) AS Frequency
+SELECT Height, COUNT(*) AS Frequency
 FROM People
 GROUP BY Hight;
       </pre>
@@ -112,7 +112,7 @@ GROUP BY Weight;
 
       <h3>Distribuzione bivariata (Height vs Weight)</h3>
       <pre class="sql">
-SELECT Hight AS Height, Weight, COUNT(*) AS Frequency
+SELECT Height, Weight, COUNT(*) AS Frequency
 FROM People
 GROUP BY Hight, Weight;
       </pre>
