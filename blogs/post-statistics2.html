@@ -172,6 +172,40 @@ GROUP BY Height, Weight;
   </ul>
   </footer>
 
+   <script>
+        // Chiedi il testo all'utente
+        const text = prompt("Inserisci il testo da analizzare:");
+
+        function letterDistribution(text) {
+            const freq = {};
+            text = text.toLowerCase().replace(/[^a-z]/g, '');
+            for (let char of text) {
+                freq[char] = (freq[char] || 0) + 1;
+            }
+            return freq;
+        }
+
+        function caesarCipher(text, shift) {
+            return text.replace(/[a-z]/gi, function(char) {
+                const start = char >= 'a' && char <= 'z' ? 97 : 65;
+                return String.fromCharCode((char.charCodeAt(0) - start + shift) % 26 + start);
+            });
+        }
+
+        function caesarDecodeWithFreq(cipherText) {
+            const textFreq = letterDistribution(cipherText);
+            const sortedTextLetters = Object.keys(textFreq).sort((a, b) => textFreq[b] - textFreq[a]);
+            const shift = (sortedTextLetters.length && sortedTextLetters[0].charCodeAt(0) - 'e'.charCodeAt(0)) % 26;
+            return caesarCipher(cipherText, 26 - shift);
+        }
+
+        console.log("Distribuzione lettere:", letterDistribution(text));
+        const encrypted = caesarCipher(text, 3);
+        console.log("Testo cifrato:", encrypted);
+        const decrypted = caesarDecodeWithFreq(encrypted);
+        console.log("Testo decifrato:", decrypted);
+    </script>
+
 
 
 </body>
