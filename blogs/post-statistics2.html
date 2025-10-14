@@ -154,46 +154,46 @@ GROUP BY Height, Weight;
 
     <!-- Interpretazione -->
     <section class="card">
-      <h1>Cifrario di Cesare (Caesar Cipher)</h1>
-    <p>
-      Il <strong>Cifrario di Cesare</strong> è un sistema di crittografia a sostituzione in cui ogni lettera
-      del testo viene spostata di un certo numero di posizioni nell’alfabeto.
-      Puoi inserire del testo qui sotto per cifrarlo e decifrarlo automaticamente.
-    </p>
+      <h2 style="color:#0f172a;">Come funziona il Cifrario di Cesare</h2>
+  <p>
+    Il <strong>Cifrario di Cesare</strong> è uno dei più antichi metodi di crittografia. 
+    Ogni lettera del messaggio originale viene sostituita con un’altra lettera 
+    che si trova alcune posizioni più avanti nell’alfabeto.
+    Ad esempio, con uno spostamento (<em>shift</em>) di 3, la <strong>A</strong> diventa <strong>D</strong>, 
+    la <strong>B</strong> diventa <strong>E</strong>, e così via.
+  </p>
 
-    <label for="text">Testo da cifrare o decifrare:</label>
-    <textarea id="text" rows="4" placeholder="Scrivi il testo qui..."></textarea>
+  <p>
+    Per <strong>decifrare</strong> un messaggio basta invertire lo spostamento, 
+    riportando ogni lettera indietro di 3 posizioni. 
+    Se non si conosce la chiave esatta, è possibile analizzare il testo usando la 
+    <strong>distribuzione delle lettere</strong> del linguaggio.
+  </p>
 
-    <label for="shift">Chiave di spostamento:</label>
-    <input type="number" id="shift" value="3" min="1" max="25">
+  <h3 style="color:#1e293b;">Decodifica tramite distribuzione di linguaggio</h3>
+  <p>
+    Ogni lingua ha una frequenza caratteristica delle lettere: 
+    in italiano e in inglese, la più comune è spesso la <strong>E</strong>.
+    Analizzando quale lettera compare più spesso nel testo cifrato, 
+    possiamo stimare di quanto è stato fatto lo spostamento:
+  </p>
 
-    <p class="small" id="count">Numero di lettere: 0</p>
+  <ul>
+    <li>Si conta la frequenza di ogni lettera nel testo cifrato.</li>
+    <li>Si individua la lettera più frequente (es. <em>K</em>).</li>
+    <li>Si suppone che quella lettera corrisponda alla <em>E</em> del linguaggio originale.</li>
+    <li>Si calcola la differenza tra <em>K</em> ed <em>E</em>: quella è la <strong>chiave stimata</strong>.</li>
+  </ul>
 
-    <h2>Testo cifrato:</h2>
-    <div id="encrypted" class="result"></div>
+  <p>
+    Il tuo script calcola automaticamente questo valore e mostra la versione 
+    <strong>decifrata</strong> del testo, senza bisogno di conoscere la chiave iniziale.
+  </p>
 
-    <h2>Testo decifrato:</h2>
-    <div id="decrypted" class="result"></div>
-
-    <p class="small">
-      💡 Suggerimento: se non conosci la chiave, si può analizzare la distribuzione delle lettere
-      (frequenza di E, A, I, O, N...) per indovinare lo spostamento usato.
-    </p>
-    </section>
-
-    <section class="card">
-        <h2>Prova il tuo testo</h2>
-        <textarea id="inputText" rows="6" style="width:100%;" placeholder="Scrivi o incolla il testo qui..."></textarea>
-        <button id="analyzeBtn" style="margin-top:12px;">Analizza testo</button>
-
-        <h3>Distribuzione lettere</h3>
-        <pre id="letterDist"></pre>
-
-        <h3>Testo cifrato (Cesare)</h3>
-        <pre id="encryptedText"></pre>
-
-        <h3>Testo decifrato automaticamente</h3>
-        <pre id="decryptedText"></pre>
+  <p style="font-size:.9rem; color:#475569;">
+    🔎 Questo metodo funziona bene con testi lunghi, perché più lettere ci sono,
+    più la distribuzione statistica si avvicina a quella reale della lingua.
+  </p>
     </section>
 
   </main>
