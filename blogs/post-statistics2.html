@@ -161,6 +161,21 @@ GROUP BY Height, Weight;
       </p>
     </section>
 
+    <section class="card">
+        <h2>Prova il tuo testo</h2>
+        <textarea id="inputText" rows="6" style="width:100%;" placeholder="Scrivi o incolla il testo qui..."></textarea>
+        <button id="analyzeBtn" style="margin-top:12px;">Analizza testo</button>
+
+        <h3>Distribuzione lettere</h3>
+        <pre id="letterDist"></pre>
+
+        <h3>Testo cifrato (Cesare)</h3>
+        <pre id="encryptedText"></pre>
+
+        <h3>Testo decifrato automaticamente</h3>
+        <pre id="decryptedText"></pre>
+    </section>
+
   </main>
 
   <footer>
@@ -173,9 +188,6 @@ GROUP BY Height, Weight;
   </footer>
 
    <script>
-        // Chiedi il testo all'utente
-        const text = prompt("Inserisci il testo da analizzare:");
-
         function letterDistribution(text) {
             const freq = {};
             text = text.toLowerCase().replace(/[^a-z]/g, '');
@@ -199,11 +211,19 @@ GROUP BY Height, Weight;
             return caesarCipher(cipherText, 26 - shift);
         }
 
-        console.log("Distribuzione lettere:", letterDistribution(text));
-        const encrypted = caesarCipher(text, 3);
-        console.log("Testo cifrato:", encrypted);
-        const decrypted = caesarDecodeWithFreq(encrypted);
-        console.log("Testo decifrato:", decrypted);
+        // Evento bottone
+        document.getElementById('analyzeBtn').addEventListener('click', () => {
+            const text = document.getElementById('inputText').value;
+
+            const freq = letterDistribution(text);
+            document.getElementById('letterDist').textContent = JSON.stringify(freq, null, 2);
+
+            const encrypted = caesarCipher(text, 3);
+            document.getElementById('encryptedText').textContent = encrypted;
+
+            const decrypted = caesarDecodeWithFreq(encrypted);
+            document.getElementById('decryptedText').textContent = decrypted;
+        });
     </script>
 
 
