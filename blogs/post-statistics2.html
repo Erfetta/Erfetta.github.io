@@ -154,11 +154,31 @@ GROUP BY Height, Weight;
 
     <!-- Interpretazione -->
     <section class="card">
-      <h2>Interpretazione (esempio)</h2>
-      <p>
-        Dalla distribuzione univariata delle età si vede che i valori sono distribuiti tra 25 e 78 anni (campione piccolo).
-        La distribuzione di altezza e peso mostra la varietà del campione; la bivariata (altezza vs peso) permette di verificare se esistono combinazioni ricorrenti.
-      </p>
+      <h1>Cifrario di Cesare (Caesar Cipher)</h1>
+    <p>
+      Il <strong>Cifrario di Cesare</strong> è un sistema di crittografia a sostituzione in cui ogni lettera
+      del testo viene spostata di un certo numero di posizioni nell’alfabeto.
+      Puoi inserire del testo qui sotto per cifrarlo e decifrarlo automaticamente.
+    </p>
+
+    <label for="text">Testo da cifrare o decifrare:</label>
+    <textarea id="text" rows="4" placeholder="Scrivi il testo qui..."></textarea>
+
+    <label for="shift">Chiave di spostamento:</label>
+    <input type="number" id="shift" value="3" min="1" max="25">
+
+    <p class="small" id="count">Numero di lettere: 0</p>
+
+    <h2>Testo cifrato:</h2>
+    <div id="encrypted" class="result"></div>
+
+    <h2>Testo decifrato:</h2>
+    <div id="decrypted" class="result"></div>
+
+    <p class="small">
+      💡 Suggerimento: se non conosci la chiave, si può analizzare la distribuzione delle lettere
+      (frequenza di E, A, I, O, N...) per indovinare lo spostamento usato.
+    </p>
     </section>
 
     <section class="card">
