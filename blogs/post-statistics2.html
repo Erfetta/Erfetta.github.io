@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Statistiche: Dataset & Distribuzioni — Blog</title>
+
+  <!-- Chart.js per i grafici -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --accent:#2c3e50;
+      --muted:#666;
+      --card-bg:#fff;
+      --page-bg:#f6f8fb;
+    }
+    body{
+      font-family: Inter, Arial, sans-serif;
+      margin:0;
+      background:var(--page-bg);
+      color:#222;
+      line-height:1.5;
+    }
+    header{
+      background: linear-gradient(90deg,#0f1724 0%, #123148 100%);
+      color: #fff;
+      padding:28px 20px;
+    }
+    header h1{ margin:0; font-size:1.5rem; }
+    .container{ max-width:980px; margin:28px auto; padding:0 18px;}
+    .card{
+      background:var(--card-bg);
+      border-radius:10px;
+      box-shadow:0 6px 18px rgba(15,23,36,0.06);
+      padding:18px;
+      margin-bottom:18px;
+    }
+    h2{ color:var(--accent); margin-top:0; }
+    pre.sql{
+      background:#0b1220; color:#d6f8ff; padding:12px; border-radius:6px; overflow:auto;
+    }
+    table{
+      width:100%; border-collapse:collapse; margin-top:8px;
+    }
+    table th, table td{
+      padding:8px 10px; border:1px solid #e6e9ef; text-align:left;
+    }
+    .flex-row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .col{ flex:1 1 300px; min-width:250px; }
+    .center{ text-align:center; }
+    footer{ text-align:center; color:var(--muted); font-size:.9rem; padding:20px 0 60px; }
+    /* responsive chart container */
+    .chart-wrap{ max-width:700px; margin:12px auto; }
+    .note{ color:var(--muted); font-size:.95rem; margin-top:8px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Statistica e Cybersecurity — Analisi del dataset</h1>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Introduzione -->
+    <article class="card">
+      <h2>Obiettivo del homework</h2>
+      <p>
+        Spiegare i concetti di <strong>dataset</strong> e <strong>distribuzione</strong>, creare un dataset in un DBMS (Access),
+        calcolare <strong>fino a 3 distribuzioni univariate</strong> e almeno una <strong>distribuzione bivariata</strong>.
+      </p>
+      <p class="note">Qui ho usato come esempio la tabella <code>People</code> con i campi: <em>ID, Name, Surname, Age, Height, Weight</em>.</p>
+    </article>
+
+    <!-- Dataset -->
+    <section class="card">
+      <h2>Dataset (snapshot)</h2>
+      <p>Puoi inserire qui lo screenshot della tabella esportata da Access. Salvalo in <code>images/dataset.png</code> e sostituisci il percorso se diverso.</p>
+      <div class="center">
+        <img src="images/dataset.png" alt="Dataset snapshot" style="max-width:100%; border-radius:6px; box-shadow:0 6px 12px rgba(0,0,0,0.08);">
+      </div>
+      <p class="note">Oppure, copia i risultati delle query e incollali nelle tabelle qui sotto (scegli l'opzione che preferisci).</p>
+    </section>
+
+    <!-- Query SQL -->
+    <section class="card">
+      <h2>Query SQL utilizzate</h2>
+      <p>Qui trovi le query che ho eseguito in Access per ottenere le distribuzioni univariate e la bivariata.</p>
+
+      <h3>Distribuzione univariata (Age)</h3>
+      <pre class="sql">
+SELECT Age, COUNT(*) AS Frequency
+FROM People
+GROUP BY Age;
+      </pre>
+
+      <h3>Distribuzione univariata (Height)</h3>
+      <pre class="sql">
+SELECT Hight AS Height, COUNT(*) AS Frequency
+FROM People
+GROUP BY Hight;
+      </pre>
+
+      <h3>Distribuzione univariata (Weight)</h3>
+      <pre class="sql">
+SELECT Weight, COUNT(*) AS Frequency
+FROM People
+GROUP BY Weight;
+      </pre>
+
+      <h3>Distribuzione bivariata (Height vs Weight)</h3>
+      <pre class="sql">
+SELECT Hight AS Height, Weight, COUNT(*) AS Frequency
+FROM People
+GROUP BY Hight, Weight;
+      </pre>
+    </section>
+
+    <!-- Risultati: tabelle -->
+    <section class="card">
+      <h2>Risultati (inserisci qui i dati reali)</h2>
+      <p>Per mostrare il lavoro nel blog, copia qui i risultati ottenuti da Access nelle relative tabelle HTML. Esempi con dati fittizi:</p>
+
+      <div class="flex-row">
+        <div class="col">
+          <h3>Distribuzione - Age</h3>
+          <table>
+            <thead><tr><th>Age</th><th>Frequency</th></tr></thead>
+            <tbody id="table-age">
+              <!-- Sostituisci con i risultati reali -->
+              <tr><td>25</td><td>1</td></tr>
+              <tr><td>39</td><td>1</td></tr>
+              <tr><td>45</td><td>1</td></tr>
+              <tr><td>65</td><td>1</td></tr>
+              <tr><td>78</td><td>1</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col">
+          <h3>Distribuzione - Height</h3>
+          <table>
+            <thead><tr><th>Height</th><th>Frequency</th></tr></thead>
+            <tbody id="table-height">
+              <!-- Sostituisci con i risultati reali -->
+              <tr><td>160</td><td>1</td></tr>
+              <tr><td>175</td><td>1</td></tr>
+              <tr><td>176</td><td>1</td></tr>
+              <tr><td>180</td><td>1</td></tr>
+              <tr><td>190</td><td>1</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <h3>Distribuzione - Weight</h3>
+        <table>
+          <thead><tr><th>Weight</th><th>Frequency</th></tr></thead>
+          <tbody id="table-weight">
+            <!-- Sostituisci con i risultati reali -->
+            <tr><td>65</td><td>1</td></tr>
+            <tr><td>78</td><td>1</td></tr>
+            <tr><td>85</td><td>1</td></tr>
+            <tr><td>87</td><td>1</td></tr>
+            <tr><td>89</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Grafici -->
+    <section class="card">
+      <h2>Grafici (esempio con Chart.js)</h2>
+      <p>Qui sotto trovi grafici esemplificativi. Sostituisci gli array di dati nello script con i valori reali dalle tue query.</p>
+
+      <div class="chart-wrap">
+        <canvas id="chartAge" aria-label="Grafico età" role="img"></canvas>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="chartHeightWeight" aria-label="Grafico altezza vs peso" role="img"></canvas>
+      </div>
+
+      <p class="note">Se preferisci, puoi esportare i risultati da Access in CSV e poi creare grafici in JS leggendo quel CSV (es. con fetch + PapaParse), ma questo esempio usa dati statici per semplicità.</p>
+    </section>
+
+    <!-- Interpretazione -->
+    <section class="card">
+      <h2>Interpretazione (esempio)</h2>
+      <p>
+        Dalla distribuzione univariata delle età si vede che i valori sono distribuiti tra 25 e 78 anni (campione piccolo).
+        La distribuzione di altezza e peso mostra la varietà del campione; la bivariata (altezza vs peso) permette di verificare se esistono combinazioni ricorrenti.
+      </p>
+      <p class="note">Nel report finale, commenta trend, eventuali outlier, e cosa significherebbe tutto questo nel contesto applicativo (ad es. differenze demografiche rilevanti per studi clinici o profili di rischio).</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Pagina generata per il tuo homework — modifica i dati nelle tabelle e nello script con i risultati di Access.</p>
+  </footer>
+
+  <!-- SCRIPT: inizializza i grafici con dati di esempio -->
+  <script>
+    // Dati di esempio - sostituisci con i tuoi risultati reali
+    const ageLabels = ['25','39','45','65','78'];
+    const ageFreq = [1,1,1,1,1];
+
+    const heightLabels = ['160','175','176','180','190'];
+    const avgWeightForHeight = [65,78,85,89,87]; // se usi media peso per altezza
+
+    // Chart età (bar)
+    const ctxAge = document.getElementById('chartAge').getContext('2d');
+    new Chart(ctxAge, {
+      type: 'bar',
+      data: {
+        labels: ageLabels,
+        datasets: [{
+          label: 'Frequenza (Age)',
+          data: ageFreq,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision:0 } } }
+      }
+    });
+
+    // Chart altezza vs peso medio (line)
+    const ctxHW = document.getElementById('chartHeightWeight').getContext('2d');
+    new Chart(ctxHW, {
+      type: 'line',
+      data: {
+        labels: heightLabels,
+        datasets: [{
+          label: 'Peso medio per altezza',
+          data: avgWeightForHeight,
+          tension: 0.3,
+          borderWidth: 2,
+          fill: false,
+        }]
+      },
+      options: { responsive: true, plugins:{ legend:{ position:'top' } } }
+    });
+  </script>
+
+</body>
+</html>
