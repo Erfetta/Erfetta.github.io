@@ -8,8 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="../images/favicon.png" type="image/png">
 
-  <!-- Chart.js per i grafici -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
   <style>
     .card{
@@ -83,7 +82,7 @@ GROUP BY Age;
       <pre class="sql">
 SELECT Height, COUNT(*) AS Frequency
 FROM People
-GROUP BY Hight;
+GROUP BY Height;
       </pre>
 
       <h3>Distribuzione univariata (Weight)</h3>
@@ -97,7 +96,7 @@ GROUP BY Weight;
       <pre class="sql">
 SELECT Height, Weight, COUNT(*) AS Frequency
 FROM People
-GROUP BY Hight, Weight;
+GROUP BY Height, Weight;
       </pre>
     </section>
 
@@ -114,8 +113,8 @@ GROUP BY Hight, Weight;
             <tbody id="table-age">
               <!-- Sostituisci con i risultati reali -->
               <tr><td>25</td><td>1</td></tr>
-              <tr><td>39</td><td>1</td></tr>
               <tr><td>45</td><td>1</td></tr>
+              <tr><td>55</td><td>1</td></tr>
               <tr><td>65</td><td>1</td></tr>
               <tr><td>78</td><td>1</td></tr>
             </tbody>
@@ -128,10 +127,8 @@ GROUP BY Hight, Weight;
             <thead><tr><th>Height</th><th>Frequency</th></tr></thead>
             <tbody id="table-height">
               <!-- Sostituisci con i risultati reali -->
-              <tr><td>160</td><td>1</td></tr>
               <tr><td>175</td><td>1</td></tr>
-              <tr><td>176</td><td>1</td></tr>
-              <tr><td>180</td><td>1</td></tr>
+              <tr><td>180</td><td>3</td></tr>
               <tr><td>190</td><td>1</td></tr>
             </tbody>
           </table>
@@ -144,31 +141,16 @@ GROUP BY Hight, Weight;
           <thead><tr><th>Weight</th><th>Frequency</th></tr></thead>
           <tbody id="table-weight">
             <!-- Sostituisci con i risultati reali -->
-            <tr><td>65</td><td>1</td></tr>
+            <tr><td>65</td><td>2</td></tr>
             <tr><td>78</td><td>1</td></tr>
             <tr><td>85</td><td>1</td></tr>
             <tr><td>87</td><td>1</td></tr>
-            <tr><td>89</td><td>1</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Grafici -->
-    <section class="card">
-      <h2>Grafici (esempio con Chart.js)</h2>
-      <p>Qui sotto trovi grafici esemplificativi. Sostituisci gli array di dati nello script con i valori reali dalle tue query.</p>
-
-      <div class="chart-wrap">
-        <canvas id="chartAge" aria-label="Grafico età" role="img"></canvas>
-      </div>
-
-      <div class="chart-wrap">
-        <canvas id="chartHeightWeight" aria-label="Grafico altezza vs peso" role="img"></canvas>
-      </div>
-
-      <p class="note">Se preferisci, puoi esportare i risultati da Access in CSV e poi creare grafici in JS leggendo quel CSV (es. con fetch + PapaParse), ma questo esempio usa dati statici per semplicità.</p>
-    </section>
+   
 
     <!-- Interpretazione -->
     <section class="card">
@@ -195,41 +177,7 @@ GROUP BY Hight, Weight;
     const heightLabels = ['160','175','176','180','190'];
     const avgWeightForHeight = [65,78,85,89,87]; // se usi media peso per altezza
 
-    // Chart età (bar)
-    const ctxAge = document.getElementById('chartAge').getContext('2d');
-    new Chart(ctxAge, {
-      type: 'bar',
-      data: {
-        labels: ageLabels,
-        datasets: [{
-          label: 'Frequenza (Age)',
-          data: ageFreq,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, ticks: { precision:0 } } }
-      }
-    });
-
-    // Chart altezza vs peso medio (line)
-    const ctxHW = document.getElementById('chartHeightWeight').getContext('2d');
-    new Chart(ctxHW, {
-      type: 'line',
-      data: {
-        labels: heightLabels,
-        datasets: [{
-          label: 'Peso medio per altezza',
-          data: avgWeightForHeight,
-          tension: 0.3,
-          borderWidth: 2,
-          fill: false,
-        }]
-      },
-      options: { responsive: true, plugins:{ legend:{ position:'top' } } }
-    });
+   
   </script>
 
 </body>
