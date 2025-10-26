@@ -1,1 +1,163 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini RSA Encrypt/Decrypt</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="../images/favicon.png" type="image/png">
+</head>
+<body>
+  <header>
+    <h1>📚 My Blog</h1>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+  </header>
+
+ <main>
+    <section>
+      <h2>🧠 Description</h2>
+      <p>
+        In this homework, we repeat the same exercise as in <strong>Homework II</strong>, but instead of using a Caesar Cipher,
+        we apply <strong>RSA encryption</strong> to individual letters of a text.
+      </p>
+
+      <p>
+        The goal is to:
+      </p>
+      <ul>
+        <li>Encrypt and decrypt letters using small and manageable prime numbers <code>p</code> and <code>q</code>.</li>
+        <li>Analyze the <strong>letter frequency distribution</strong> of the encrypted text.</li>
+        <li>Try to decode it by comparing the encrypted text’s distribution to the language’s natural distribution.</li>
+      </ul>
+
+      <h3>⚙️ How RSA works (simplified)</h3>
+      <ol>
+        <li>Choose two prime numbers: <code>p</code> and <code>q</code>.</li>
+        <li>Compute <code>n = p × q</code> and <code>φ(n) = (p-1)(q-1)</code>.</li>
+        <li>Choose a public exponent <code>e</code> that is coprime with <code>φ(n)</code>.</li>
+        <li>Find the private exponent <code>d</code> such that <code>(e × d) ≡ 1 (mod φ(n))</code>.</li>
+        <li>Public key: <code>(e, n)</code> — Private key: <code>(d, n)</code>.</li>
+      </ol>
+
+      <p>
+        To encrypt a letter (converted to a number), use:
+        <br><code>c = m<sup>e</sup> mod n</code><br>
+        To decrypt, use:
+        <br><code>m = c<sup>d</sup> mod n</code>
+      </p>
+    </section>
+
+    <section>
+      <h2>💻 Try it yourself</h2>
+
+      <label for="inputText"><strong>Enter text or encrypted numbers:</strong></label>
+      <textarea id="inputText" placeholder="Type text like HELLO or numbers like 8 27 1 ..."></textarea>
+
+      <button onclick="encryptText()">Encrypt</button>
+      <button onclick="decryptText()">Decrypt</button>
+      <button onclick="analyzeFrequency()">Analyze Frequency</button>
+
+      <div class="result" id="output"></div>
+    </section>
+
+    <section>
+      <h3>📊 Frequency Analysis (for decryption without key)</h3>
+      <p>
+        In cryptanalysis, when the decryption key is unknown, we can attempt to decode the message by comparing
+        the frequency of characters in the encrypted text with the frequency distribution of letters in the target language (e.g., English).
+      </p>
+      <p>
+        Common English letter frequencies: E, T, A, O, I, N, S, H, R, D, L, C, U, M, W, F, G, Y, P, B, V, K, J, X, Q, Z.
+      </p>
+    </section>
+  </main>
+
+
+  <script>
+    // Small primes for demo
+    const p = 5, q = 11;
+    const n = p * q;           // 55
+    const phi = (p - 1) * (q - 1); // 40
+    const e = 3;               // Public exponent
+    const d = 27;              // Private exponent (since 3 * 27 ≡ 1 mod 40)
+
+    function letterToNumber(letter) {
+      return letter.charCodeAt(0) - 64; // A=1, B=2, ..., Z=26
+    }
+
+    function numberToLetter(num) {
+      return String.fromCharCode(num + 64);
+    }
+
+    function modPow(base, exp, mod) {
+      let result = 1;
+      for (let i = 0; i < exp; i++) {
+        result = (result * base) % mod;
+      }
+      return result;
+    }
+
+    function encryptText() {
+      const text = document.getElementById("inputText").value.toUpperCase().replace(/[^A-Z]/g, "");
+      const encrypted = [];
+      for (let char of text) {
+        const m = letterToNumber(char);
+        const c = modPow(m, e, n);
+        encrypted.push(c);
+      }
+      document.getElementById("output").textContent = "🔐 Encrypted: " + encrypted.join(" ");
+    }
+
+    function decryptText() {
+      const input = document.getElementById("inputText").value.trim().split(" ").map(Number);
+      const decrypted = [];
+      for (let c of input) {
+        if (!isNaN(c)) {
+          const m = modPow(c, d, n);
+          decrypted.push(numberToLetter(m));
+        }
+      }
+      document.getElementById("output").textContent = "🔓 Decrypted: " + decrypted.join("");
+    }
+
+    function analyzeFrequency() {
+      const text = document.getElementById("inputText").value.replace(/[^A-Z]/gi, "").toUpperCase();
+      if (!text) {
+        document.getElementById("output").textContent = "⚠️ Please enter some text first.";
+        return;
+      }
+
+      const freq = {};
+      for (let char of text) {
+        freq[char] = (freq[char] || 0) + 1;
+      }
+
+      const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+      let result = "📊 Frequency Analysis:\n";
+      for (let [char, count] of sorted) {
+        result += `${char}: ${count}\n`;
+      }
+
+      document.getElementById("output").textContent = result;
+    }
+  </script>
+
+
+<footer>
+  <p>How to contact me:</p>
+  <ul class="social-icons">
+    <li><a href="fettuccia57@gmail.com"><i class="fas fa-envelope"></i></a></li>
+    <li><a href="www.linkedin.com/in/simone-fettuccia-a88086332" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+    <li><a href="https://github.com/Erfetta" target="_blank"><i class="fab fa-github"></i></a></li>
+  </ul>
+</footer>
+
+
+
+</body>
+</html>
