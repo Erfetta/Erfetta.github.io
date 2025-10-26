@@ -18,6 +18,143 @@
     </nav>
   </header>
 
+  <h1>Homework IV – Law of Large Numbers (LLN) Simulation</h1>
+
+<h2>Description</h2>
+<p>
+In this homework, we simulate the <strong>Law of Large Numbers (LLN)</strong>.  
+We perform <em>m</em> independent simulations, each consisting of <em>n</em> Bernoulli trials with probability of success <em>p</em>.  
+For each trajectory, we compute the <strong>relative frequency</strong> of success:
+</p>
+
+<p style="text-align:center; font-style:italic;">
+f(n) = S<sub>n</sub> / n
+</p>
+
+<p>
+where S<sub>n</sub> is the number of successes after n trials.  
+The goal is to visualize how the relative frequency <strong>f(n)</strong> converges to the true probability <strong>p</strong> as n increases.  
+According to the Law of Large Numbers, the larger n becomes, the closer f(n) stays around p.
+</p>
+
+<p>
+We also display a <strong>histogram</strong> (on the right side of the main chart) that shows the distribution of f(n) across all m trajectories for the final trial step.
+This demonstrates that, as n grows, the empirical distribution of f(n) becomes more concentrated near the true probability p.
+</p>
+
+<h2>Interactive Simulation</h2>
+
+<!-- Controls -->
+<label>Number of trajectories (m): 
+  <input id="mInput" type="number" value="100">
+</label>
+<br>
+<label>Trials per trajectory (n): 
+  <input id="nInput" type="number" value="500">
+</label>
+<br>
+<label>Probability of success (p): 
+  <input id="pInput" type="number" step="0.01" value="0.5">
+</label>
+<br><br>
+<button onclick="runSimulation()">Run Simulation</button>
+
+<!-- Canvases -->
+<div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+  <canvas id="trajCanvas" width="600" height="400" style="border:1px solid #000;"></canvas>
+  <canvas id="histCanvas" width="200" height="400" style="border:1px solid #000;"></canvas>
+</div>
+
+<h3>Explanation</h3>
+<ul>
+  <li>The left chart shows <strong>m trajectories</strong> of the relative frequency f(n) = S<sub>n</sub>/n.</li>
+  <li>The <strong>red horizontal line</strong> indicates the true probability p.</li>
+  <li>The histogram on the right shows the distribution of the final f(n) values across all trajectories.</li>
+  <li>As n grows, the histogram becomes narrower and centered around p — illustrating the LLN.</li>
+</ul>
+
+<script>
+// Function to simulate m trajectories of n Bernoulli trials
+function runSimulation() {
+  const m = parseInt(document.getElementById("mInput").value);
+  const nMax = parseInt(document.getElementById("nInput").value);
+  const p = parseFloat(document.getElementById("pInput").value);
+  
+  const trajCanvas = document.getElementById("trajCanvas");
+  const tctx = trajCanvas.getContext("2d");
+  const histCanvas = document.getElementById("histCanvas");
+  const hctx = histCanvas.getContext("2d");
+
+  // Generate trajectories
+  let trajectories = [];
+  for (let i = 0; i < m; i++) {
+    let arr = [];
+    let successes = 0;
+    for (let n = 1; n <= nMax; n++) {
+      if (Math.random() < p) successes++;
+      arr.push(successes / n);
+    }
+    trajectories.push(arr);
+  }
+
+  // Draw trajectories
+  tctx.clearRect(0, 0, trajCanvas.width, trajCanvas.height);
+  for (let i = 0; i < m; i++) {
+    tctx.beginPath();
+    for (let n = 0; n < nMax; n++) {
+      const x = (n / nMax) * trajCanvas.width;
+      const y = trajCanvas.height - trajectories[i][n] * trajCanvas.height;
+      if (n === 0) tctx.moveTo(x, y);
+      else tctx.lineTo(x, y);
+    }
+    tctx.strokeStyle = "rgba(0,0,0,0.2)";
+    tctx.stroke();
+  }
+
+  // Draw theoretical probability line p
+  tctx.beginPath();
+  tctx.moveTo(0, trajCanvas.height - p * trajCanvas.height);
+  tctx.lineTo(trajCanvas.width, trajCanvas.height - p * trajCanvas.height);
+  tctx.strokeStyle = "red";
+  tctx.lineWidth = 2;
+  tctx.stroke();
+  tctx.fillStyle = "red";
+  tctx.fillText("p = " + p, 10, trajCanvas.height - p * trajCanvas.height - 5);
+
+  // Compute histogram of final f(n)
+  const lastValues = trajectories.map(t => t[t.length - 1]);
+  const bins = 20;
+  const counts = Array(bins).fill(0);
+  for (let val of lastValues) {
+    let index = Math.floor(val * bins);
+    if (index >= bins) index = bins - 1;
+    counts[index]++;
+  }
+
+  // Draw histogram on the right
+  hctx.clearRect(0, 0, histCanvas.width, histCanvas.height);
+  const maxCount = Math.max(...counts);
+  for (let i = 0; i < bins; i++) {
+    const barHeight = (counts[i] / maxCount) * histCanvas.height;
+    const x = (i / bins) * histCanvas.width;
+    const y = histCanvas.height - barHeight;
+    const barWidth = histCanvas.width / bins - 2;
+    hctx.fillStyle = "gray";
+    hctx.fillRect(x, y, barWidth, barHeight);
+  }
+
+  // Draw line showing true p
+  const px = p * histCanvas.width;
+  hctx.strokeStyle = "red";
+  hctx.beginPath();
+  hctx.moveTo(px, 0);
+  hctx.lineTo(px, histCanvas.height);
+  hctx.stroke();
+  hctx.fillStyle = "red";
+  hctx.fillText("p", px + 4, 12);
+}
+</script>
+
 
 
 <footer>
