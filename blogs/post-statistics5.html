@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Measures of Location & Dispersion</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="../images/favicon.png" type="image/png">
+</head>
+<body>
+  <header>
+    <h1>📚 My Blog</h1>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section>
+      <article class="card">
+        <h2>🧠 Research Task — Measures of Location & Dispersion</h2>
+        <p>
+          This article reviews the fundamental statistical concepts of
+          <strong>measures of location (central tendency)</strong> and
+          <strong>measures of dispersion</strong>. Measures of location summarize where
+          the “center” of the data lies, while measures of dispersion quantify
+          how spread out the data are around that center. Used together, they
+          provide a compact but informative description of a dataset and are
+          essential in both descriptive and inferential statistics.
+        </p>
+      </article>
+    </section>
+
+    <section>
+      <article class="card">
+        <h2>📍 Measures of Location (Central Tendency)</h2>
+        <p>The most common measures and when to use them:</p>
+
+        <h3>Arithmetic Mean</h3>
+        <p>
+          The sum of all observations divided by the number of observations
+          (<code>mean = Σx / n</code>). It uses all data points and is easy to
+          manipulate algebraically (e.g., in regression, ANOVA).
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> efficient, widely understood, uses all values.</li>
+          <li><strong>Limitations:</strong> sensitive to outliers and skewness.</li>
+          <li><strong>Typical uses:</strong> balanced datasets, performance averages, signals with symmetric noise.</li>
+        </ul>
+
+        <h3>Median</h3>
+        <p>
+          The middle value when data are ordered (50th percentile). It is robust
+          to extreme values.
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> resistant to outliers; good for skewed distributions.</li>
+          <li><strong>Limitations:</strong> ignores magnitudes away from the center; less algebra-friendly.</li>
+          <li><strong>Typical uses:</strong> incomes, housing prices, waiting times, survival data.</li>
+        </ul>
+
+        <h3>Mode</h3>
+        <p>
+          The most frequent value; the only measure that works with <em>nominal</em> data.
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> simple; meaningful for categorical data.</li>
+          <li><strong>Limitations:</strong> may be non-unique (bi-/multi-modal) or not informative for numeric data.</li>
+          <li><strong>Typical uses:</strong> most common category/label, market baskets, pixel intensities.</li>
+        </ul>
+
+        <h3>Other Useful Location Measures</h3>
+        <ul>
+          <li><strong>Geometric Mean:</strong> best for multiplicative processes and growth rates (finance, biology).</li>
+          <li><strong>Harmonic Mean:</strong> averages of rates/ratios (e.g., speeds, densities).</li>
+          <li><strong>Trimmed/Winsorized Mean:</strong> improves robustness by reducing outlier impact.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article class="card">
+        <h2>📈 Measures of Dispersion (Variability)</h2>
+        <p>Key measures to quantify spread around the center:</p>
+
+        <h3>Range</h3>
+        <p>
+          <code>max − min</code>. Extremely simple but depends only on two values and is very
+          sensitive to outliers. Useful for quick checks and rough bounds.
+        </p>
+
+        <h3>Variance (<code>s²</code>)</h3>
+        <p>
+          Average squared deviation from the mean
+          (<code>s² = Σ(x − mean)² / (n − 1)</code> for a sample).
+          Fundamental in many models (ANOVA, regression, forecasting).
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> uses all data; central to probabilistic modeling.</li>
+          <li><strong>Limitations:</strong> squared units make interpretation less intuitive; outlier-sensitive.</li>
+        </ul>
+
+        <h3>Standard Deviation (<code>s</code>)</h3>
+        <p>
+          Square root of variance; same units as the data. The most common
+          variability metric in practice (risk/volatility, quality control).
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> interpretable scale; widely adopted.</li>
+          <li><strong>Limitations:</strong> still influenced by outliers; normality often assumed for rules-of-thumb.</li>
+        </ul>
+
+        <h3>Interquartile Range (IQR)</h3>
+        <p>
+          <code>Q3 − Q1</code> (spread of the middle 50% of data). Robust to outliers and skew.
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> resistant; aligns with boxplots and nonparametric summaries.</li>
+          <li><strong>Limitations:</strong> ignores tails; less sensitive to total variability.</li>
+        </ul>
+
+        <h3>Coefficient of Variation (CV)</h3>
+        <p>
+          <code>CV = s / mean</code> (often ×100%). Compares relative variability between datasets with different units/scales.
+        </p>
+        <ul>
+          <li><strong>Advantages:</strong> unitless; enables cross-scale comparisons.</li>
+          <li><strong>Limitations:</strong> unstable/undefined when mean ≈ 0.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article class="card">
+        <h2>🛠️ Choosing the Right Measures</h2>
+        <ul>
+          <li><strong>Symmetric, outlier-free data:</strong> Mean + Standard Deviation.</li>
+          <li><strong>Skewed data / outliers present:</strong> Median + IQR (optionally trimmed mean).</li>
+          <li><strong>Categorical data:</strong> Mode (and proportions by category).</li>
+          <li><strong>Rates/ratios or growth:</strong> Harmonic or Geometric Mean; compare spread with CV.</li>
+        </ul>
+
+        <h3>Examples by Field</h3>
+        <ul>
+          <li><strong>Finance:</strong> Mean return (location) + SD / CV (risk).</li>
+          <li><strong>Healthcare:</strong> Median survival + IQR due to heavy skew/outliers.</li>
+          <li><strong>Manufacturing:</strong> Process mean + variance/SD for capability and control.</li>
+          <li><strong>Education:</strong> Mean/Median scores + Range/IQR to assess dispersion across students.</li>
+          <li><strong>Social Sciences:</strong> Mode for nominal variables; Median/IQR for Likert-type or skewed scores.</li>
+        </ul>
+
+        <h3>Common Pitfalls</h3>
+        <ul>
+          <li>Reporting a location measure <em>without</em> any dispersion (incomplete summary).</li>
+          <li>Using the mean with heavy outliers; prefer median/IQR or trimmed means.</li>
+          <li>Comparing SDs across different scales; use CV for fair comparisons.</li>
+          <li>Interpreting SD as robust—remember it is outlier-sensitive.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article class="card">
+        <h2>✅ Conclusion</h2>
+        <p>
+          A robust statistical summary should pair a <strong>measure of location</strong>
+          (mean, median, mode, etc.) with a suitable <strong>measure of dispersion</strong>
+          (SD, variance, IQR, CV). The right choice depends on the data type,
+          distribution shape, presence of outliers, and the analytic goal.
+          In practice, always check distributional features (skewness, tails,
+          outliers) before choosing which measures to report.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>How to contact me:</p>
+    <ul class="social-icons">
+      <li><a href="mailto:fettuccia57@gmail.com"><i class="fas fa-envelope"></i></a></li>
+      <li><a href="https://www.linkedin.com/in/simone-fettuccia-a88086332" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+      <li><a href="https://github.com/Erfetta" target="_blank"><i class="fab fa-github"></i></a></li>
+    </ul>
+  </footer>
+</body>
+</html>
