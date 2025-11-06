@@ -42,14 +42,23 @@
           Let \( \mu_n = \frac{1}{n}\sum_{i=1}^n x_i \).
           Then
         </p>
-        <p><code>
-          \mu_n = \frac{1}{n}\bigg(\sum_{i=1}^{n-1} x_i + x_n\bigg)
-               = \frac{n-1}{n}\cdot \frac{1}{n-1}\sum_{i=1}^{n-1} x_i + \frac{x_n}{n}
-               = \frac{n-1}{n}\mu_{n-1} + \frac{x_n}{n}.
-        </code></p>
+
+        <!-- era <p><code>...</code></p> -->
+        <p>
+          \[
+            \mu_n
+            = \frac{1}{n}\Big(\sum_{i=1}^{n-1} x_i + x_n\Big)
+            = \frac{n-1}{n}\cdot \frac{1}{n-1}\sum_{i=1}^{n-1} x_i
+              + \frac{x_n}{n}
+            = \frac{n-1}{n}\mu_{n-1} + \frac{x_n}{n}.
+          \]
+        </p>
+
         <p>
           Rearranging:
-          <code>\(\mu_n = \mu_{n-1} + \dfrac{x_n - \mu_{n-1}}{n}\)</code>.
+          \[
+            \mu_n = \mu_{n-1} + \frac{x_n - \mu_{n-1}}{n}.
+          \]
           This gives an <em>online</em> update using only \( \mu_{n-1} \) and \( n \).
         </p>
 
@@ -60,24 +69,25 @@
           When a new sample \( x_n \) arrives:
         </p>
         <ol>
-          <li>\(\delta = x_n - \mu_{n-1}\)</li>
-          <li>\(\mu_n = \mu_{n-1} + \delta/n\)</li>
-          <li>\(\delta' = x_n - \mu_n\)</li>
-          <li>\(M2_n = M2_{n-1} + \delta \cdot \delta'\)</li>
+          <li>\( \delta = x_n - \mu_{n-1} \)</li>
+          <li>\( \mu_n = \mu_{n-1} + \delta/n \)</li>
+          <li>\( \delta' = x_n - \mu_n \)</li>
+          <li>\( M2_n = M2_{n-1} + \delta \cdot \delta' \)</li>
         </ol>
         <p>
-          Sketch: expand \(M2_n = \sum (x_i-\mu_n)^2\) and subtract \(M2_{n-1}=\sum_{i=1}^{n-1}(x_i-\mu_{n-1})^2\).
-          Terms collapse because \(\sum_{i=1}^{n-1}(x_i-\mu_{n-1})=0\), yielding
-          \(M2_n = M2_{n-1} + \delta(x_n-\mu_n) = M2_{n-1} + \delta\delta'\).
+          Sketch: expand \( M2_n = \sum (x_i-\mu_n)^2 \) and subtract
+          \( M2_{n-1}=\sum_{i=1}^{n-1}(x_i-\mu_{n-1})^2 \).
+          Terms collapse because \( \sum_{i=1}^{n-1}(x_i-\mu_{n-1})=0 \), yielding
+          \( M2_n = M2_{n-1} + \delta(x_n-\mu_n) = M2_{n-1} + \delta\delta' \).
         </p>
         <p>
           Then:
           <br>• <strong>Population variance</strong>: \( \sigma_n^2 = \dfrac{M2_n}{n} \)
-          <br>• <strong>Sample variance</strong>: \( s_n^2 = \dfrac{M2_n}{n-1} \) (for \(n \ge 2\))
+          <br>• <strong>Sample variance</strong>: \( s_n^2 = \dfrac{M2_n}{n-1} \) (for \( n \ge 2 \))
         </p>
         <p>
           This recurrence is <strong>numerically stable</strong> and avoids catastrophic cancellation typical of
-          naive formulas like \(E[X^2]-E[X]^2\) computed in batch.
+          naive formulas like \( E[X^2]-E[X]^2 \) computed in batch.
         </p>
       </article>
     </section>
@@ -187,6 +197,11 @@ class OnlineStats {
     </ul>
   </footer>
 
+  <!-- MathJax to render LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <script>
 /*** Online mean & variance (Welford) ***/
 class OnlineStats {
@@ -228,7 +243,9 @@ function updateDisplay() {
   $("sdsOut").textContent = format(stats.getSdSample());
 }
 function format(x) {
-  return Number.isFinite(x) ? (Math.abs(x) >= 1e6 || Math.abs(x) < 1e-4 ? x.toExponential(6) : x.toFixed(6)) : "–";
+  return Number.isFinite(x)
+    ? (Math.abs(x) >= 1e6 || Math.abs(x) < 1e-4 ? x.toExponential(6) : x.toFixed(6))
+    : "–";
 }
 
 $("addBtn").addEventListener("click", () => {
@@ -259,13 +276,11 @@ $("resetBtn").addEventListener("click", () => {
 /*** Optional sanity check (not used for production calc) ***/
 $("testBtn").addEventListener("click", () => {
   const vals = parseValues($("values").value);
-  // build a fresh OnlineStats to process exactly these vals
   const s = new OnlineStats();
   vals.forEach(v => s.add(v));
   const mean_online = s.getMean();
   const var_online = s.getVarSample();
 
-  // batch (only for verification): mean & sample variance
   const n = vals.length;
   const mean_b = n ? vals.reduce((a,b)=>a+b,0)/n : NaN;
   const var_b = n>1 ? vals.reduce((acc,v)=>acc+(v-mean_b)**2,0)/(n-1) : NaN;
@@ -281,7 +296,6 @@ $("testBtn").addEventListener("click", () => {
   $("testLog").textContent = lines.join("\n");
 });
 
-// init
 updateDisplay();
   </script>
 </body>
