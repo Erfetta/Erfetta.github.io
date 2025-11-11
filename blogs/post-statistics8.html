@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bernoulli LLN vs Random Walk: analogie e legami combinatori</title>
+
+  <!-- Stile del tuo blog -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="../images/favicon.png" type="image/png">
+
+  <!-- MathJax per formule LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📚 My Blog</h1>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- Titolo / Introduzione -->
+    <section>
+      <article class="card">
+        <h2>Analogie tra Homework — Bernoulli (LLN) e Random Walk della Sicurezza</h2>
+        <p>
+          Confrontiamo l’<strong>Homework sul processo di Bernoulli e la Legge dei Grandi Numeri</strong> con
+          l’<strong>Homework sul random walk della sicurezza</strong> (server sicuro/breach).
+          Mostriamo le <em>analogie</em>, le <em>differenze</em> e i <em>legami combinatori</em> con
+          coefficienti binomiali, Triangolo di Pascal, espansione binomiale, Fibonacci e altro.
+        </p>
+      </article>
+    </section>
+
+    <!-- Somiglianze -->
+    <section>
+      <article class="card">
+        <h3>🔁 Somiglianze</h3>
+        <ul>
+          <li>
+            Entrambi i modelli sono sequenze di <strong>prove di Bernoulli indipendenti</strong>.
+            Nel LLN si osserva il successo con probabilità \(p\); nel random walk “sicurezza”
+            la “settimana sicura” ha probabilità \(q=(1-p)^m\) (nessun attaccante ha successo).
+          </li>
+          <li>
+            In entrambi i casi agisce la <strong>Legge dei Grandi Numeri</strong>:
+            la frequenza relativa dei successi converge alla probabilità vera man mano che \(n\) cresce.
+          </li>
+          <li>
+            La <strong>distribuzione binomiale</strong> governa il conteggio dei successi:
+            se \(X\) è il numero di settimane sicure,
+            \[
+              X \sim \mathrm{Bin}(n,q),\qquad
+              \mathbb{P}(X=k)=\binom{n}{k}q^k(1-q)^{n-k}.
+            \]
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Differenze -->
+    <section>
+      <article class="card">
+        <h3>⚖️ Differenze</h3>
+        <ul>
+          <li>
+            Nel LLN si guarda la <strong>media campionaria</strong> \( \overline{X}_n=X/n \).
+            Nel random walk si osserva lo <strong>score cumulativo</strong>
+            \[
+              S_n=\sum_{t=1}^n Y_t,\quad Y_t\in\{+1,-1\},
+            \]
+            con \(+1\) per “sicuro” e \(-1\) per “breach”.
+          </li>
+          <li>
+            C’è una relazione lineare:
+            \[
+              S_n = 2X - n \quad\Longleftrightarrow\quad X=\frac{S_n+n}{2}.
+            \]
+            Quindi distribuzione di \(S_n\) e di \(X\) sono equivalenti via cambio di variabile.
+          </li>
+          <li>
+            Il random walk introduce una <strong>prospettiva di processo</strong> (traiettorie nel tempo,
+            probabilità di raggiungere certi livelli, hitting times), non presente nel semplice LLN.
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Proprietà matematiche -->
+    <section>
+      <article class="card">
+        <h3>📐 Proprietà matematiche</h3>
+        <p>
+          Per \(X\sim \mathrm{Bin}(n,q)\):
+          \[
+            \mathbb{E}[X]=nq,\qquad \mathrm{Var}(X)=nq(1-q).
+          \]
+          Per \(S_n=2X-n\):
+          \[
+            \mathbb{E}[S_n]=n(2q-1),\qquad \mathrm{Var}(S_n)=4nq(1-q).
+          \]
+          LLN: \( \tfrac{X}{n}\to q \) e \( \tfrac{S_n}{n}\to 2q-1 \) quasi sicuramente.
+          CLT: \( \tfrac{X-nq}{\sqrt{nq(1-q)}} \Rightarrow \mathcal{N}(0,1) \) e
+          \( \tfrac{S_n-n(2q-1)}{2\sqrt{nq(1-q)}} \Rightarrow \mathcal{N}(0,1) \).
+        </p>
+        <p>
+          Generating function “a due direzioni” del random walk:
+          \[
+            \left(qz + (1-q)z^{-1}\right)^n
+            = \sum_{s=-n}^{n} \mathbb{P}(S_n=s)\, z^{\,s}.
+          \]
+          I coefficienti sono proprio le probabilità (a fattore \(z^s\)) di ogni score finale \(s\).
+        </p>
+      </article>
+    </section>
+
+    <!-- Coefficienti binomiali, Pascal, espansione -->
+    <section>
+      <article class="card">
+        <h3>🔢 Coefficienti binomiali, Triangolo di Pascal ed espansione binomiale</h3>
+        <p>
+          I coefficienti \(\binom{n}{k}\) contano i modi di scegliere \(k\) successi su \(n\) prove
+          e sono organizzati nel <strong>Triangolo di Pascal</strong>, con ricorrenza
+          \[
+            \binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}.
+          \]
+          Questa somma dei “due genitori” riflette l’idea che per arrivare a \(k\) successi in \(n\)
+          l’ultimo passo può essere stato un successo (da \(k-1\) su \(n-1\)) o un insuccesso (da \(k\) su \(n-1\)).
+        </p>
+        <p>
+          L’<strong>espansione binomiale</strong> fornisce:
+          \[
+            (a+b)^n=\sum_{k=0}^{n}\binom{n}{k}a^k b^{\,n-k},\quad
+            \text{e con } a=q,\,b=1-q \Rightarrow 1=\sum_{k=0}^n \binom{n}{k}q^k(1-q)^{n-k}.
+          \]
+          Nel random walk, associando \(a=qz\) e \(b=(1-q)z^{-1}\), i coefficienti di \(z^s\)
+          nella potenza \(\big(qz+(1-q)z^{-1}\big)^n\) producono le probabilità di \(S_n=s\).
+        </p>
+      </article>
+    </section>
+
+    <!-- Fibonacci e diagonali di Pascal -->
+    <section>
+      <article class="card">
+        <h3>🟨 Fibonacci e diagonali di Pascal</h3>
+        <p>
+          La <strong>sequenza di Fibonacci</strong> \((F_0,F_1,F_2,\dots)\) è collegata ai
+          coefficienti binomiali: somme su <em>diagonali oblique</em> del Triangolo di Pascal
+          generano i Fibonacci. Una nota identità classica è
+          \[
+            F_{n}
+            \;=\;
+            \sum_{k=0}^{\lfloor (n-1)/2 \rfloor}\binom{n-k-1}{k}
+            \qquad (n\ge 1).
+          \]
+          Queste identità nascono dal conteggio di pattern con vincoli locali
+          (ad esempio, cammini a passi \(+1\)/\(0\) senza adiacenze),
+          e mostrano come <em>ricorrenze semplici</em> (alla Fibonacci) emergano da
+          combinatorie “alla Pascal”.
+        </p>
+        <p class="muted">
+          Nota: in problemi affini di cammini con vincoli (es. non scendere sotto zero),
+          compaiono anche i <em>numeri di Catalan</em>; qui il random walk è libero,
+          quindi la distribuzione finale resta pienamente binomiale.
+        </p>
+      </article>
+    </section>
+
+    <!-- Sintesi finale -->
+    <section>
+      <article class="card">
+        <h3>🧠 Sintesi</h3>
+        <ul>
+          <li>Entrambi gli homework si basano su <strong>Bernoulli indipendenti</strong> e sulla LLN.</li>
+          <li>Il LLN evidenzia la <strong>convergenza della media</strong>; il random walk evidenzia l’<strong>intera distribuzione</strong> degli esiti finali.</li>
+          <li>I <strong>coefficienti binomiali</strong>, il <strong>Triangolo di Pascal</strong> e l’<strong>espansione binomiale</strong> descrivono la struttura combinatoria sottostante.</li>
+          <li>Connessioni con <strong>Fibonacci</strong> emergono tramite somme su diagonali di Pascal,
+              mostrando come ricorrenze semplici derivino da conteggi combinatori.</li>
+          <li>Relazioni chiave: \(X\sim\mathrm{Bin}(n,q)\), \(S_n=2X-n\),
+              \(\mathbb{E}[S_n]=n(2q-1)\), \(\mathrm{Var}(S_n)=4nq(1-q)\), e
+              \(\big(qz+(1-q)z^{-1}\big)^n\) come generatore delle probabilità di \(S_n\).</li>
+        </ul>
+      </article>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>How to contact me:</p>
+    <ul class="social-icons">
+      <li><a href="mailto:fettuccia57@gmail.com"><i class="fas fa-envelope"></i></a></li>
+      <li><a href="https://www.linkedin.com/in/simone-fettuccia-a88086332" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+      <li><a href="https://github.com/Erfetta" target="_blank"><i class="fab fa-github"></i></a></li>
+    </ul>
+  </footer>
+</body>
+</html>
