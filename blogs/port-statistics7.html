@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMWK 1 — Random Walk della Sicurezza (Simulazione & Binomiale)</title>
+
+  <!-- Stile del tuo blog -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="../images/favicon.png" type="image/png">
+
+  <!-- Chart.js per grafici -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- MathJax per render LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📚 My Blog</h1>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="blog.html">Blog</a>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- Titolo / Descrizione -->
+    <section>
+      <article class="card">
+        <h2>HMWK 1 — Random Walk della Sicurezza</h2>
+        <p>
+          Un server riceve aggiornamenti settimanali per \(n\) settimane ed è attaccato da \(m\) attaccanti,
+          ciascuno con probabilità di breach \(p\). Se in una settimana nessun attaccante ha successo,
+          assegniamo \(+1\); se avviene un breach, assegnamo \(-1\).
+          La somma cumulata definisce un <em>random walk</em> con passi \(\pm 1\).
+        </p>
+        <p>
+          Con \( q = (1-p)^m \) (probabilità di restare sicuro nella settimana), il numero di settimane sicure
+          \( X \sim \mathrm{Bin}(n,q) \). Lo score finale dopo \(n\) settimane è
+          \[
+            S_n = \sum_{t=1}^n Y_t = 2X - n,
+          \]
+          e quindi \(\mathbb{P}(S_n = s) = \mathbb{P}\!\left(X = \tfrac{s+n}{2}\right)\) per \(s\) con la parità corretta.
+        </p>
+      </article>
+    </section>
+
+    <!-- Parametri -->
+    <section>
+      <article class="card">
+        <h3>Parametri & Controlli</h3>
+        <div class="grid" style="gap:8px;">
+          <div>
+            <label for="n"><strong>n</strong> — settimane</label>
+            <input id="n" type="number" min="1" value="52">
+          </div>
+          <div>
+            <label for="m"><strong>m</strong> — attaccanti per settimana</label>
+            <input id="m" type="number" min="1" value="5">
+          </div>
+          <div>
+            <label for="p"><strong>p</strong> — prob. breach per attaccante</label>
+            <input id="p" type="number" step="0.0001" min="0" max="1" value="0.1">
+          </div>
+          <div>
+            <label for="T"><strong>T</strong> — traiettorie simulate</label>
+            <input id="T" type="number" min="100" step="100" value="20000">
+          </div>
+          <div>
+            <label for="seed"><strong>Seed</strong> PRNG</label>
+            <input id="seed" type="number" value="123">
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <button id="runBtn"><i class="fa-solid fa-play"></i> Esegui simulazione</button>
+          <button id="csvBtn" class="secondary" disabled><i class="fa-solid fa-file-arrow-down"></i> Scarica CSV</button>
+          <span id="status" class="muted" style="margin-left:8px;"></span>
+        </div>
+        <p id="qLine" class="muted" style="margin-top:8px;"></p>
+      </article>
+    </section>
+
+    <!-- Grafici -->
+    <section class="grid" style="gap:16px;">
+      <article class="card">
+        <h3>Tracce (random walk)</h3>
+        <canvas id="trajChart" height="220"></canvas>
+      </article>
+      <article class="card">
+        <h3>Distribuzione dello score finale</h3>
+        <canvas id="distChart" height="220"></canvas>
+        <p id="tvLine" class="muted" style="margin-top:8px;"></p>
+      </article>
+    </section>
+
+    <!-- Tabella risultati -->
+    <section>
+      <article class="card">
+        <h3>Tabella — Conteggi & Probabilità</h3>
+        <div id="tableWrap"></div>
+      </article>
+    </section>
+
+    <!-- Convergenza -->
+    <section>
+      <article class="card">
+        <h3>Convergenza verso la binomiale</h3>
+        <p class="muted">Distanza di variazione totale (TV) tra distribuzione empirica e binomiale teorica in alcuni scenari.</p>
+        <div id="convWrap"></div>
+      </article>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>How to contact me:</p>
+    <ul class="social-icons">
+      <li><a href="mailto:fettuccia57@gmail.com"><i class="fas fa-envelope"></i></a></li>
+      <li><a href="https://www.linkedin.com/in/simone-fettuccia-a88086332" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+      <li><a href="https://github.com/Erfetta" target="_blank"><i class="fab fa-github"></i></a></li>
+    </ul>
+  </footer>
+
+  <!-- Script: simulazione, grafici, tabella -->
+  <script>
+  /* ===== Utilità matematiche ===== */
+  function mulberry32(a) {
+    return function() {
+      let t = a += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+  }
+  function logFactorial(n) { let s=0; for (let k=2;k<=n;k++) s+=Math.log(k); return s; }
+  function logChoose(n,k){ if(k<0||k>n) return -Infinity; return logFactorial(n)-logFactorial(k)-logFactorial(n-k); }
+  function binomPMF(n,k,q){ const lp = logChoose(n,k)+k*Math.log(q)+(n-k)*Math.log(1-q); return Math.exp(lp); }
+  function scoreSupport(n){ const a=[]; for(let s=-n; s<=n; s+=2) a.push(s); return a; }
+  function tvDistance(emp, theo){ let s=0; for(let i=0;i<emp.length;i++) s+=Math.abs(emp[i]-theo[i]); return 0.5*s; }
+
+  /* ===== Simulazione ===== */
+  function simulate({n,m,p,T,seed}) {
+    const rand = mulberry32(seed >>> 0);
+    const q = Math.pow(1-p, m);
+    const cumsums = new Array(T);
+    const finals = new Array(T);
+    for (let t=0;t<T;t++){
+      let s=0;
+      const c = new Array(n);
+      for (let i=0;i<n;i++){
+        const step = (rand() < q) ? 1 : -1;
+        s += step;
+        c[i]=s;
+      }
+      cumsums[t]=c; finals[t]=s;
+    }
+    return { q, cumsums, finals };
+  }
+
+  /* ===== UI helpers ===== */
+  function makeTable(dist){
+    const tbl = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>score</th><th>count</th><th>empirical</th><th>binomial</th></tr>';
+    tbl.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    dist.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = '<td style="text-align:center;">'+r.score+'</td>'+
+        '<td style="text-align:right;">'+r.count+'</td>'+
+        '<td style="text-align:right;">'+r.empirical.toFixed(6)+'</td>'+
+        '<td style="text-align:right;">'+r.theoretical.toFixed(6)+'</td>';
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    return tbl;
+  }
+  function toCSV(dist){
+    const head='score,count,empirical_prob,binomial_prob';
+    const rows=dist.map(r=>[r.score,r.count,r.empirical,r.theoretical].join(','));
+    return [head,...rows].join('\\n');
+  }
+
+  /* ===== Grafici (Chart.js) ===== */
+  let trajChart, distChart;
+  function renderTrajChart(ctx, cumsums){
+    const N=cumsums[0].length;
+    const labels=Array.from({length:N},(_,i)=>i+1);
+    const K=Math.min(10,cumsums.length);
+    const datasets=[];
+    for(let i=0;i<K;i++){
+      datasets.push({label:'traj '+(i+1), data:cumsums[i], borderWidth:1.5, pointRadius:0, fill:false});
+    }
+    if(trajChart) trajChart.destroy();
+    trajChart = new Chart(ctx, {
+      type:'line',
+      data:{labels, datasets},
+      options:{
+        responsive:true,
+        plugins:{legend:{display:false}},
+        scales:{x:{title:{display:true,text:'Settimana'}}, y:{title:{display:true,text:'Score cumulato'}}}
+      }
+    });
+  }
+  function renderDistChart(ctx, dist){
+    const labels = dist.map(r=>r.score);
+    const empirical = dist.map(r=>r.empirical);
+    const theoretical = dist.map(r=>r.theoretical);
+    if(distChart) distChart.destroy();
+    distChart = new Chart(ctx,{
+      data:{
+        labels,
+        datasets:[
+          {type:'bar', label:'Empirica', data:empirical},
+          {type:'line', label:'Binomiale', data:theoretical, pointRadius:2, tension:0}
+        ]
+      },
+      options:{
+        responsive:true,
+        scales:{x:{title:{display:true,text:'Score finale'}},
+                y:{title:{display:true,text:'Probabilità'},beginAtZero:true}}
+      }
+    });
+  }
+
+  /* ===== Wiring ===== */
+  const els = {
+    n: document.getElementById('n'),
+    m: document.getElementById('m'),
+    p: document.getElementById('p'),
+    T: document.getElementById('T'),
+    seed: document.getElementById('seed'),
+    run: document.getElementById('runBtn'),
+    csv: document.getElementById('csvBtn'),
+    qLine: document.getElementById('qLine'),
+    tvLine: document.getElementById('tvLine'),
+    status: document.getElementById('status'),
+    tableWrap: document.getElementById('tableWrap'),
+    convWrap: document.getElementById('convWrap'),
+    trajCtx: document.getElementById('trajChart').getContext('2d'),
+    distCtx: document.getElementById('distChart').getContext('2d')
+  };
+  let lastCSV = "";
+
+  els.run.addEventListener('click', () => {
+    const n = +els.n.value, m = +els.m.value, p = +els.p.value, T = +els.T.value, seed = +els.seed.value;
+    els.status.textContent = 'Simulazione in corso…';
+    setTimeout(()=>{
+      const {q, cumsums, finals} = simulate({n,m,p,T,seed});
+
+      // Distribuzione empirica sul supporto corretto
+      const support = []; for(let s=-n; s<=n; s+=2) support.push(s);
+      const counts = new Map(support.map(s=>[s,0]));
+      finals.forEach(s=>counts.set(s,(counts.get(s)||0)+1));
+      const total = finals.length;
+
+      const dist=[], emp=[], theo=[];
+      support.forEach(s=>{
+        const x = (s+n)/2;
+        const valid = Number.isInteger(x);
+        const probT = valid ? binomPMF(n, x, q) : 0;
+        const c = counts.get(s)||0;
+        const probE = c/total;
+        dist.push({score:s, count:c, empirical:probE, theoretical:probT});
+        emp.push(probE); theo.push(probT);
+      });
+
+      const tv = tvDistance(emp, theo);
+
+      // UI update
+      els.qLine.textContent = `q = (1-p)^m = (${(1-p).toFixed(4)})^${m} = ${q.toFixed(6)}`;
+      els.tvLine.textContent = `Distanza di variazione totale (empirico vs binomiale): ${tv.toFixed(6)}`;
+      renderTrajChart(els.trajCtx, cumsums);
+      renderDistChart(els.distCtx, dist);
+
+      els.tableWrap.innerHTML='';
+      els.tableWrap.appendChild(makeTable(dist));
+      lastCSV = toCSV(dist);
+      els.csv.disabled = false;
+
+      // Convergenza in 4 scenari
+      const scenarios = [
+        {n: Math.max(26, Math.floor(n/2)), m},
+        {n, m},
+        {n, m: Math.max(2, m*2)},
+        {n: n*2, m: Math.max(2, m*2)}
+      ].map(s=>{
+        const sim = simulate({n:s.n, m:s.m, p, T, seed:seed+1});
+        const sup = []; for(let sc=-s.n; sc<=s.n; sc+=2) sup.push(sc);
+        const cnt = new Map(sup.map(x=>[x,0]));
+        sim.finals.forEach(v=>cnt.set(v,(cnt.get(v)||0)+1));
+        const emp2=[], theo2=[];
+        sup.forEach(sc=>{
+          const xx=(sc+s.n)/2;
+          const pe=(cnt.get(sc)||0)/sim.finals.length;
+          const pt=Number.isInteger(xx)?binomPMF(s.n, xx, Math.pow(1-p, s.m)):0;
+          emp2.push(pe); theo2.push(pt);
+        });
+        return { n:s.n, m:s.m, q: Math.pow(1-p, s.m), tv: tvDistance(emp2,theo2) };
+      });
+
+      // Tabella di convergenza
+      els.convWrap.innerHTML = '';
+      const tbl = document.createElement('table');
+      tbl.innerHTML = '<thead><tr><th style="text-align:left">n</th><th>m</th><th>q</th><th>TV distance</th></tr></thead>';
+      const tb = document.createElement('tbody');
+      scenarios.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="text-align:left">${r.n}</td>
+                        <td style="text-align:right">${r.m}</td>
+                        <td style="text-align:right">${r.q.toFixed(6)}</td>
+                        <td style="text-align:right">${r.tv.toFixed(6)}</td>`;
+        tb.appendChild(tr);
+      });
+      tbl.appendChild(tb);
+      els.convWrap.appendChild(tbl);
+
+      els.status.textContent = `Fatto! (T=${T} traiettorie)`;
+    },10);
+  });
+
+  els.csv.addEventListener('click', ()=>{
+    const blob = new Blob([lastCSV], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download='hmwk1_results.csv'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  </script>
+</body>
+</html>
