@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMWK — Interpretazioni della Probabilità & Axiomatic Theory</title>
+
+  <!-- Stile del blog -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="../images/favicon.png" type="image/png">
+
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<header>
+  <h1>📚 My Blog</h1>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="blog.html">Blog</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- INTRO -->
+  <section>
+    <article class="card">
+      <h2>Interpretazioni della probabilità, approccio assiomatico e fondamenti di teoria della misura</h2>
+      <p>
+        Questo homework esamina le principali interpretazioni della probabilità
+        (classica, frequentista, bayesiana, geometrica) e mostra come l’approccio assiomatico
+        di Kolmogorov risolva i conflitti concettuali tra di esse.
+        Viene inoltre illustrato il legame profondo tra probabilità e teoria della misura,
+        e si derivano proprietà fondamentali come la <em>subadditività</em> e il
+        <em>principio di inclusione–esclusione</em>.
+      </p>
+    </article>
+  </section>
+
+  <!-- INTERPRETAZIONI -->
+  <section>
+    <article class="card">
+      <h3>🎲 Le principali interpretazioni della probabilità</h3>
+
+      <h4>1) Interpretazione classica (Laplace)</h4>
+      <p>
+        Basata sul principio di equiprobabilità:
+        \[
+          P(A)=\frac{\lvert A\rvert}{\lvert \Omega\rvert}
+        \]
+        Funziona solo quando gli esiti sono simmetrici ed equiprobabili (es. dadi, carte).
+      </p>
+
+      <h4>2) Interpretazione frequentista</h4>
+      <p>
+        La probabilità è il limite della frequenza relativa:
+        \[
+          P(A)=\lim_{n\to\infty}\frac{N_A(n)}{n}.
+        \]
+        Questa interpretazione giustifica la Legge dei Grandi Numeri,
+        ma non può definire probabilità di eventi unici (es. precisione di una macchina).
+      </p>
+
+      <h4>3) Interpretazione bayesiana</h4>
+      <p>
+        La probabilità è un grado di credenza razionale, aggiornato con la regola di Bayes:
+        \[
+          P(H\mid E)=\frac{P(E\mid H)P(H)}{P(E)}.
+        \]
+        Risolve problemi frequentisti, ma introduce la soggettività della scelta del prior.
+      </p>
+
+      <h4>4) Interpretazione geometrica</h4>
+      <p>
+        Usata in problemi continui:
+        \[
+          P(A)=\frac{\text{misura}(A)}{\text{misura}(\Omega)}.
+        \]
+        Anticipa il collegamento con la teoria della misura.
+      </p>
+
+      <h4>❗ Perché servono gli assiomi?</h4>
+      <p>
+        Le interpretazioni precedenti non sono compatibili tra loro e falliscono in scenari complessi
+        (eventi continui, variabili aleatorie non equivalenti, divergenze concettuali).
+        La soluzione è l’approccio <strong>assiomatico</strong>.
+      </p>
+    </article>
+  </section>
+
+  <!-- APPROCCIO ASSIOMATICO -->
+  <section>
+    <article class="card">
+      <h3>📐 L'approccio assiomatico di Kolmogorov</h3>
+      <p>
+        Si definisce uno spazio di probabilità
+        \((\Omega, \mathcal{F}, P)\), dove:
+      </p>
+      <ul>
+        <li>\(\Omega\) — spazio campionario</li>
+        <li>\(\mathcal{F}\) — \(\sigma\)-algebra di eventi</li>
+        <li>\(P\) — misura di probabilità</li>
+      </ul>
+
+      <h4>Assiomi:</h4>
+      <p>
+        <strong>1) Non negatività</strong> — \(P(A)\ge 0\).<br>
+        <strong>2) Normalizzazione</strong> — \(P(\Omega)=1\).<br>
+        <strong>3) Additività numerabile</strong> —  
+        per insiemi disgiunti \(A_i\):
+        \[
+          P\left(\bigcup_{i=1}^\infty A_i\right)
+          =\sum_{i=1}^\infty P(A_i).
+        \]
+      </p>
+
+      <p>
+        Questi assiomi sono validi indipendentemente da interpretazioni,
+        modelli, o significati epistemologici.
+      </p>
+    </article>
+  </section>
+
+  <!-- PROBABILITY & MEASURE THEORY -->
+  <section>
+    <article class="card">
+      <h3>📏 Probabilità e teoria della misura</h3>
+      <p>
+        La teoria della probabilità moderna è un caso speciale della teoria della misura.
+        Una misura di probabilità è una misura che assegna valore totale 1.
+      </p>
+
+      <h4>σ-algebre</h4>
+      <p>
+        Una \(\sigma\)-algebra \(\mathcal{F}\) è una collezione di insiemi chiusa per:
+        <ul>
+          <li>complemento</li>
+          <li>unioni numerabili</li>
+          <li>intersezioni numerabili</li>
+        </ul>
+      </p>
+
+      <h4>Variabili aleatorie</h4>
+      <p>
+        Una variabile aleatoria è una funzione misurabile
+        \(X:\Omega\to\mathbb{R}\); cioè
+        \[
+          \{\,\omega : X(\omega)\le a\,\} \in \mathcal{F}.
+        \]
+      </p>
+
+      <h4>Misura di probabilità</h4>
+      <p>
+        Una probabilità è una misura \(P:\mathcal{F}\to [0,1]\)
+        che rispetta gli assiomi di Kolmogorov.
+      </p>
+    </article>
+  </section>
+
+  <!-- SUBADDITIVITA -->
+  <section>
+    <article class="card">
+      <h3>➕ Subadditività</h3>
+      <p>
+        Dai soli assiomi segue la <strong>subadditività</strong>:
+        \[
+          P\left(\bigcup_{i=1}^\infty A_i\right)
+          \le \sum_{i=1}^\infty P(A_i).
+        \]
+      </p>
+
+      <h4>Dimostrazione</h4>
+      <p>
+        Definiamo insiemi disgiunti:
+        \[
+          B_1 = A_1,\qquad
+          B_2 = A_2\setminus A_1,\qquad
+          B_3 = A_3\setminus (A_1\cup A_2),\dots
+        \]
+        Allora
+        \[
+          \bigcup_i A_i = \bigcup_i B_i
+        \]
+        e i \(B_i\) sono disgiunti. Per additività numerabile:
+        \[
+          P\left(\bigcup_i A_i\right)
+          = P\left(\bigcup_i B_i\right)
+          = \sum_i P(B_i)
+          \le \sum_i P(A_i).
+        \]
+      </p>
+    </article>
+  </section>
+
+  <!-- INCLUSION EXCLUSION -->
+  <section>
+    <article class="card">
+      <h3>➖➕ Principio di inclusione–esclusione</h3>
+
+      <h4>Per due insiemi</h4>
+      <p>
+        \[
+          P(A\cup B) = P(A) + P(B) - P(A\cap B).
+        \]
+      </p>
+
+      <h4>Generalizzazione</h4>
+      <p>
+        Per insiemi \(A_1,\dots,A_n\):
+        \[
+          P\!\left(\bigcup_{i=1}^n A_i\right)
+          = \sum_{i} P(A_i)
+          - \sum_{i<j}P(A_i\cap A_j)
+          + \sum_{i<j<k}P(A_i\cap A_j\cap A_k)
+          - \cdots
+          + (-1)^{n+1} P(A_1\cap\cdots\cap A_n).
+        \]
+      </p>
+
+      <h4>Idea intuitiva</h4>
+      <p>
+        La somma dei \(P(A_i)\) “conta troppo”: le intersezioni vengono sommate più volte,
+        quindi vanno sottratte, ma le intersezioni triple sono state sottratte troppo,
+        e dunque vanno riaggiunte, e così via.
+      </p>
+    </article>
+  </section>
+
+</main>
+
+<footer>
+  <p>How to contact me:</p>
+  <ul class="social-icons">
+    <li><a href="mailto:fettuccia57@gmail.com"><i class="fas fa-envelope"></i></a></li>
+    <li><a href="https://www.linkedin.com/in/simone-fettuccia-a88086332" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+    <li><a href="https://github.com/Erfetta" target="_blank"><i class="fab fa-github"></i></a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
