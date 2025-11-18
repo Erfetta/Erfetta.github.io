@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMWK — Counting Processes & Poisson Approximation</title>
+
+  <!-- Stile del blog -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="../images/favicon.png" type="image/png">
+
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<header>
+  <h1>📚 My Blog</h1>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="blog.html">Blog</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- INTRO -->
+  <section>
+    <article class="card">
+      <h2>Simulazione di un Counting Process e Approssimazione di un Processo di Poisson</h2>
+      <p>
+        In questo homework simuleremo un <strong>counting process</strong> su un intervallo di tempo
+        \([0,T]\) (con tipicamente \(T=1\)), approssimando un processo di Poisson usando suddivisioni
+        dell’intervallo in sottointervalli molto piccoli.
+      </p>
+      <p>
+        Analizzeremo la struttura teorica del processo risultante, le sue proprietà stocastiche,
+        e l’interpretazione del parametro di intensità <strong>\(\lambda\)</strong>.
+      </p>
+    </article>
+  </section>
+
+  <!-- SIMULAZIONE -->
+  <section>
+    <article class="card">
+      <h3>🎲 Simulazione dell’approssimazione</h3>
+      <p>
+        Scegliamo un intervallo temporale \(T\) (tipicamente \(T=1\)) e lo dividiamo in
+        \(n\) sottointervalli ognuno di lunghezza \(\Delta t = T/n\).
+      </p>
+
+      <p>
+        In ogni sottointervallo generiamo un evento (“successo”) con probabilità
+        \[
+          p = \frac{\lambda}{n},
+        \]
+        dove \(\lambda\) è la <strong>media di eventi per unità di tempo</strong>.
+      </p>
+
+      <p>
+        La sequenza risultante è:
+        \[
+          X_1, X_2, \dots, X_n,\qquad X_i \sim \mathrm{Bernoulli}\!\left(\frac{\lambda}{n}\right),
+          \text{ indipendenti}.
+        \]
+        Il numero totale di eventi è:
+        \[
+          N(T) = \sum_{i=1}^n X_i.
+        \]
+      </p>
+
+      <p>
+        Quando \(n\) è grande (ad esempio \(n=5000\)), questo processo approssima un
+        <strong>processo di Poisson con parametro \(\lambda T\)</strong>.
+      </p>
+    </article>
+  </section>
+
+  <!-- IDENTIFICAZIONE DEL PROCESSO -->
+  <section>
+    <article class="card">
+      <h3>📌 Quale processo stiamo approssimando?</h3>
+      <p>
+        Partendo da:
+        <ul>
+          <li>incrementi indipendenti</li>
+          <li>probabilità piccola \(p=\lambda/n\) in ogni mini-intervallo</li>
+          <li>al più un evento per sottointervallo</li>
+        </ul>
+        otteniamo l’approssimazione classica del <strong>processo di Poisson</strong>.
+      </p>
+
+      <h4>Distribuzione degli eventi totali</h4>
+      <p>
+        Per \(N(T)=\sum X_i\) vale:
+        \[
+          N(T)\sim \mathrm{Bin}\left(n,\frac{\lambda}{n}\right).
+        \]
+        Quando \(n\to\infty\):
+        \[
+          \mathrm{Bin}\left(n,\frac{\lambda}{n}\right)
+          \;\Rightarrow\;
+          \mathrm{Poisson}(\lambda T).
+        \]
+      </p>
+
+      <h4>Incrementi</h4>
+      <p>
+        Se consideriamo piccoli intervalli \([t,t+\Delta t]\):
+        \[
+          \mathbb{P}(N(t+\Delta t)-N(t)=1)\approx \lambda \Delta t,
+        \]
+        \[
+          \mathbb{P}(N(t+\Delta t)-N(t)\ge 2)=o(\Delta t)
+        \]
+        che sono esattamente le <strong>proprietà infinitesimali</strong> del processo di Poisson.
+      </p>
+    </article>
+  </section>
+
+  <!-- PROPRIETÀ TEORICHE -->
+  <section>
+    <article class="card">
+      <h3>📐 Proprietà teoriche del processo di Poisson</h3>
+
+      <h4>1) Incrementi indipendenti</h4>
+      <p>
+        Per intervalli disgiunti, i numeri di eventi sono indipendenti:
+        \[
+          N(t_2)-N(t_1) \;\perp\; N(t_4)-N(t_3).
+        \]
+      </p>
+
+      <h4>2) Incrementi stazionari</h4>
+      <p>
+        La distribuzione dipende solo dalla lunghezza dell'intervallo:
+        \[
+          N(t+s)-N(t) \sim \mathrm{Poisson}(\lambda s).
+        \]
+      </p>
+
+      <h4>3) Distribuzione di Poisson</h4>
+      <p>
+        \[
+          \mathbb{P}(N(T)=k)
+          = e^{-\lambda T}\frac{(\lambda T)^k}{k!}.
+        \]
+      </p>
+
+      <h4>4) Tempi di attesa: processo esponenziale</h4>
+      <p>
+        I tempi tra eventi consecutivi sono distribuiti come:
+        \[
+          \text{Exp}(\lambda).
+        \]
+        Questo significa che il processo è <strong>memoryless</strong>.
+      </p>
+    </article>
+  </section>
+
+  <!-- INTERPRETAZIONE DI λ -->
+  <section>
+    <article class="card">
+      <h3>⚡ Interpretazione del parametro \(\lambda\)</h3>
+      <p>
+        \(\lambda\) rappresenta la <strong>frequenza media di eventi per unità di tempo</strong>.
+      </p>
+
+      <p>
+        Può essere interpretato come:
+        <ul>
+          <li>tasso di arrivo medio (es. 40 email/ora → \(\lambda=40\))</li>
+          <li>intensità di un flusso di eventi indipendenti</li>
+          <li>densità temporale degli eventi</li>
+        </ul>
+      </p>
+
+      <h4>Proprietà fondamentali</h4>
+      <p>
+        <strong>Valore atteso:</strong>
+        \[
+          \mathbb{E}[N(T)] = \lambda T
+        \]
+        <strong>Varianza:</strong>
+        \[
+          \mathrm{Var}(N(T)) = \lambda T.
+        \]
+        Questo è unico: nel processo di Poisson media e varianza coincidono.
+      </p>
+
+      <p>
+        Nel limite dei sottointervalli infinitamente piccoli,
+        \(\lambda\) controlla sia la <strong>frequenza media</strong> sia la
+        <strong>scarcity</strong> degli eventi (probabilità di più eventi in un intervallo minuscolo tende a zero).
+      </p>
+    </article>
+  </section>
+
+  <!-- SINTESI -->
+  <section>
+    <article class="card">
+      <h3>🧠 Sintesi</h3>
+      <ul>
+        <li>La suddivisione dell’intervallo in \(n\) parti e la generazione Bernoulli
+            con probabilità \(\lambda/n\) approssima un processo di Poisson.</li>
+        <li>Il numero totale di eventi converge da binomiale a Poisson.</li>
+        <li>Il processo ottenuto ha incrementi indipendenti e stazionari.</li>
+        <li>La distribuzione dei tempi di attesa converge all’esponenziale.</li>
+        <li>\(\lambda\) è il tasso medio di eventi per unità di tempo, e controlla
+            sia la media sia la varianza del processo.</li>
+      </ul>
+    </article>
+  </section>
+
+</main>
+
+<footer>
+  <p>How to contact me:</p>
+  <ul class="social-icons">
+    <li><a href="mailto:fettuccia57@gmail.com"><i class="fas fa-envelope"></i></a></li>
+    <li><a href="https://www.linkedin.com/in/simone-fettuccia-a88086332" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+    <li><a href="https://github.com/Erfetta" target="_blank"><i class="fab fa-github"></i></a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
