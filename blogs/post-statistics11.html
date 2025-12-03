@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HMWK — Simulazione di un Processo di Wiener (Euler–Maruyama)</title>
+  <title>HMWK — Wiener Process & Euler–Maruyama SDE Simulation</title>
 
-  <!-- Stile del blog -->
+  <!-- Blog style -->
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" href="../images/favicon.png" type="image/png">
@@ -30,18 +30,27 @@
 
 <main class="container">
 
-
-<!-- INTRO -->
+<!-- INTRO / MOTIVATION -->
 <section>
   <article class="card">
-    <h2>Simulazione di un Processo di Wiener con il Metodo di Euler–Maruyama</h2>
+    <h2>Simulating a Wiener Process (Brownian Motion) Using the Euler–Maruyama Method</h2>
+
     <p>
-      Questo homework usa il simulatore SDE sviluppato in un homework precedente per simulare un
-      <strong>processo di Wiener</strong> (moto Browniano) tramite lo schema numerico
-      <strong>Euler–Maruyama</strong>.
+      The <strong>Wiener process</strong>, also known as <strong>Brownian motion</strong>,
+      is one of the most fundamental stochastic processes in applied mathematics.
+      It plays a central role in physics, finance, biology, neuroscience, signal processing,
+      probability theory, and many mathematical models involving randomness.
     </p>
+
     <p>
-      Facoltativamente, estendiamo il codice per supportare SDE generali della forma:
+      Brownian motion was first observed by <em>Robert Brown</em> in 1827 and later formalized
+      mathematically by <em>Norbert Wiener</em> in the 20th century. Its mathematical structure
+      forms the basis of stochastic calculus and stochastic differential equations (SDEs).
+    </p>
+
+    <p>
+      In this homework we use the <strong>Euler–Maruyama method</strong>—developed in a previous
+      assignment—to numerically simulate a Wiener process, and optionally a general SDE of the form:
       \[
         dX_t = a(X_t,t)\,dt + b(X_t,t)\,dW_t.
       \]
@@ -49,50 +58,116 @@
   </article>
 </section>
 
-
-<!-- SIMULAZIONE -->
+<!-- WHAT IS WIENER -->
 <section>
   <article class="card">
-    <h3>🧪 Simulazione Interattiva (Euler–Maruyama)</h3>
+    <h3>🌊 What Is a Wiener Process?</h3>
+
+    <p>
+      Formally, a Wiener process \(W_t\) is a stochastic process satisfying:
+    </p>
+
+    <ul>
+      <li>\(W_0 = 0\)</li>
+      <li>Independent increments</li>
+      <li>Gaussian increments: \(W_{t+s} - W_t \sim \mathcal{N}(0, s)\)</li>
+      <li>Continuous paths (but almost surely nowhere differentiable)</li>
+    </ul>
+
+    <p>
+      Intuitively, at every instant the process is “kicked” by a small independent Gaussian shock,
+      producing an irregular, jittery trajectory.
+    </p>
+
+    <h4>Connection with SDEs</h4>
+    <p>
+      The Wiener process formally satisfies the SDE:
+      \[
+        dW_t = dW_t,
+      \]
+      i.e.,
+      \[
+        a(x,t) = 0, \quad b(x,t) = 1.
+      \]
+    </p>
+  </article>
+</section>
+
+<!-- EULER–MARUYAMA -->
+<section>
+  <article class="card">
+    <h3>📐 The Euler–Maruyama Method</h3>
+
+    <p>
+      For a general SDE:
+      \[
+        dX_t = a(X_t,t)\,dt + b(X_t,t)\,dW_t,
+      \]
+      the Euler–Maruyama approximation is:
+      \[
+        X_{t+\Delta t} = X_t 
+        + a(X_t,t)\,\Delta t 
+        + b(X_t,t)\,\sqrt{\Delta t}\,Z_t,
+      \]
+      where \(Z_t \sim \mathcal{N}(0,1)\).
+    </p>
+
+    <h4>Special case: Wiener process</h4>
+    <p>
+      Setting \(a = 0\) and \(b = 1\) gives:
+      \[
+        W_{t+\Delta t} = W_t + \sqrt{\Delta t}\,Z_t.
+      \]
+      This is exactly the scheme implemented in the simulator below.
+    </p>
+  </article>
+</section>
+
+<!-- INTERACTIVE SIMULATION -->
+<section>
+  <article class="card">
+    <h3>🧪 Interactive Wiener Process Simulator</h3>
+
+    <p>Set the simulation parameters:</p>
 
     <div class="grid" style="gap:10px;">
       <div>
-        <label><strong>T</strong> (tempo finale)</label>
+        <label><strong>T</strong> (final time)</label>
         <input id="T" type="number" step="0.1" min="0.1" value="1">
       </div>
       <div>
-        <label><strong>n</strong> (steps)</label>
+        <label><strong>n</strong> (time steps)</label>
         <input id="n" type="number" min="50" value="1000">
       </div>
       <div>
-        <label><strong>X₀</strong> (valore iniziale)</label>
+        <label><strong>X₀</strong> (initial value)</label>
         <input id="x0" type="number" step="0.1" value="0">
       </div>
       <div>
-        <label><strong>Simulazioni</strong></label>
-        <input id="runs" type="number" min="1" value="1">
+        <label><strong>Simulations</strong></label>
+        <input id="runs" type="number" min="1" value="3">
       </div>
     </div>
 
-    <button id="simulateBtn"><i class="fa-solid fa-play"></i> Simula Wiener</button>
+    <button id="simulateBtn"><i class="fa-solid fa-play"></i> Simulate Wiener</button>
     <span id="status" class="muted" style="margin-left:8px;"></span>
 
-    <h4 style="margin-top:20px;">Traiettorie simulate</h4>
+    <h4 style="margin-top:20px;">Sample trajectories</h4>
     <canvas id="wienerChart" height="250"></canvas>
   </article>
 </section>
 
-
-<!-- SDE GENERALE -->
+<!-- GENERAL SDE -->
 <section>
   <article class="card">
-    <h3>⚙️ Opzionale: Simulatore SDE Generale</h3>
+    <h3>⚙️ Optional: Simulate a General SDE</h3>
+
     <p>
-      Possiamo simulare una SDE della forma:
+      We can simulate a general stochastic differential equation:
       \[
         dX_t = a(X_t,t)dt + b(X_t,t)dW_t.
       \]
-      Inserisci funzioni per <strong>a(x,t)</strong> e <strong>b(x,t)</strong> usando JavaScript.
+      Enter JavaScript expressions for the drift and diffusion terms.
     </p>
 
     <div class="grid" style="gap:10px;">
@@ -101,78 +176,61 @@
         <input id="drift" type="text" value="0">
       </div>
       <div class="col-12">
-        <label>Diffusione \(b(x,t)\)</label>
+        <label>Diffusion \(b(x,t)\)</label>
         <input id="diff" type="text" value="1">
       </div>
     </div>
 
-    <button id="simulateSDE"><i class="fa-solid fa-code"></i> Simula SDE</button>
+    <button id="simulateSDE"><i class="fa-solid fa-code"></i> Simulate SDE</button>
 
-    <h4 style="margin-top:20px;">Traiettoria SDE</h4>
+    <h4 style="margin-top:20px;">SDE trajectory</h4>
     <canvas id="sdeChart" height="250"></canvas>
   </article>
 </section>
 
-
-<!-- TEORIA -->
+<!-- APPLICATIONS -->
 <section>
   <article class="card">
-    <h3>📐 Il Metodo Euler–Maruyama</h3>
+    <h3>🌍 Applications of the Wiener Process</h3>
 
-    <p>Per una SDE:
-      \[
-        dX_t = a(X_t,t)dt + b(X_t,t) dW_t,
-      \]
-      lo schema Euler–Maruyama è:
-      \[
-        X_{t+\Delta t} =
-        X_t + a(X_t,t)\Delta t + b(X_t,t)\sqrt{\Delta t}\,Z_t,
-      \]
-      con \(Z_t \sim \mathcal{N}(0,1)\).
-    </p>
+    <ul>
+      <li><strong>Physics</strong>: diffusion, heat equation, particle movement</li>
+      <li><strong>Finance</strong>: Black–Scholes model for option pricing</li>
+      <li><strong>Neuroscience</strong>: neuron firing models</li>
+      <li><strong>Biology</strong>: molecular motion in fluids</li>
+      <li><strong>Engineering</strong>: modelling noise in signals</li>
+    </ul>
 
-    <h4>Moto Browniano (Wiener process)</h4>
     <p>
-      Il processo di Wiener soddisfa:
-      \[
-        dW_t = dW_t,
-      \]
-      cioè:
-      \[
-        a(x,t)=0, \qquad b(x,t)=1.
-      \]
-      Quindi:
-      \[
-        W_{t+\Delta t}=W_t+\sqrt{\Delta t}\,Z_t.
-      \]
+      The Wiener process is the fundamental “noise source” in stochastic modelling.
+      Many SDEs describe real-world phenomena by adding drift (systematic behavior)
+      and diffusion (random fluctuations) to a Wiener process.
     </p>
-
   </article>
 </section>
 
-
-<!-- JS: SIMULAZIONE -->
+<!-- JS -->
 <script>
 let wienerChart = null;
 let sdeChart = null;
 
-function simulateEulerMaruyama(T, n, x0, driftFun, diffFun) {
-  const dt = T / n;
-  let X = x0;
-  let trajectory = [X];
-
-  for (let i = 0; i < n; i++) {
-    const t = i * dt;
-    const Z = Math.sqrt(dt) * randn();
-    X = X + driftFun(X, t) * dt + diffFun(X, t) * Z;
-    trajectory.push(X);
-  }
-  return trajectory;
-}
-
 function randn() {
   let u = Math.random(), v = Math.random();
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function simulateEulerMaruyama(T, n, x0, driftFun, diffFun) {
+  const dt = T / n;
+  let X = x0;
+  let traj = [X];
+
+  for (let i = 0; i < n; i++) {
+    const t = i * dt;
+    const Z = randn();
+    X = X + driftFun(X, t) * dt + diffFun(X, t) * Math.sqrt(dt) * Z;
+    traj.push(X);
+  }
+  return traj;
 }
 
 document.getElementById("simulateBtn").addEventListener("click", () => {
@@ -181,12 +239,11 @@ document.getElementById("simulateBtn").addEventListener("click", () => {
   const runs = parseInt(document.getElementById("runs").value);
   const x0 = parseFloat(document.getElementById("x0").value);
 
-  document.getElementById("status").textContent = "Simulazione in corso...";
+  document.getElementById("status").textContent = "Simulating...";
 
   let trajectories = [];
-  for (let k = 0; k < runs; k++) {
+  for (let k = 0; k < runs; k++)
     trajectories.push(simulateEulerMaruyama(T, n, x0, () => 0, () => 1));
-  }
 
   const labels = [...Array(n+1).keys()].map(i => (i * T / n).toFixed(3));
 
@@ -206,7 +263,7 @@ document.getElementById("simulateBtn").addEventListener("click", () => {
     }
   });
 
-  document.getElementById("status").textContent = "Fatto!";
+  document.getElementById("status").textContent = "Done!";
 });
 
 document.getElementById("simulateSDE").addEventListener("click", () => {
@@ -214,11 +271,8 @@ document.getElementById("simulateSDE").addEventListener("click", () => {
   const n = parseInt(document.getElementById("n").value);
   const x0 = parseFloat(document.getElementById("x0").value);
 
-  const driftExpr = document.getElementById("drift").value;
-  const diffExpr = document.getElementById("diff").value;
-
-  const driftFun = new Function("x","t", "return " + driftExpr + ";");
-  const diffFun  = new Function("x","t", "return " + diffExpr + ";");
+  const driftFun = new Function("x","t","return " + document.getElementById("drift").value + ";");
+  const diffFun  = new Function("x","t","return " + document.getElementById("diff").value + ";");
 
   const traj = simulateEulerMaruyama(T, n, x0, driftFun, diffFun);
 
@@ -231,19 +285,16 @@ document.getElementById("simulateSDE").addEventListener("click", () => {
     type: "line",
     data: {
       labels: labels,
-      datasets: [
-        {
-          label: "SDE trajectory",
-          data: traj,
-          borderWidth: 2,
-          pointRadius: 0
-        }
-      ]
+      datasets: [{
+        label: "SDE trajectory",
+        data: traj,
+        borderWidth: 2,
+        pointRadius: 0
+      }]
     }
   });
 });
 </script>
-
 
 </main>
 
